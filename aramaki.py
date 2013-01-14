@@ -22,6 +22,8 @@ in a nutshell:
     - I got tired. I will continue the review later
     - Please, resume at the point I left
 
+Questions/comments @olemoudi / ole@makensi.es / http://makensi.es
+
 '''
 
 EDITOR = '/usr/bin/gvim'
@@ -39,9 +41,12 @@ TITLE = 'Aramaki - assisting tool for manual code review (v%s)' % VERSION
 
 CONTEXT = 8
 
+# Common patterns for webapp source code security auditing. 
+# Probably still some interesting keywords are missing but these will get your
+# hands started and generate a good balance of interesting snippets vs false positives.
 JAVA = '|getParameter|getQueryString|getHeader|getRequestURI|getRequestURL|getCookies|getRequestedSessionID|getInputStream|getReader|getMethod|getProtocol|getServerName|getRemoteUser|getUserPrincipal|java\.io\.FileinputStream|java\.io\.FileOutputStream|java\.io\.FileReader|java\.io\.FileWriter|createStatement|\.execute\(|\.executeQuery\(|\.prepareStatement|PreparedStatement|getRuntime|runtime\.exec\(|sendRedirect|setStatus\(|addHeader\(|Socket\(|login-config|security-constraint|session-config|error-page|init-param'
 ASPNET = '|\.Params|\.QueryString|\.ServerVariables|\.Headers|\.Url|\.RawURL|\.UrlReferrer|\.Cookies|\.BinaryRead|\.HTTPMethod|\.Browser|\.UserAgent|\.AcceptTypes|\.UserLanguages|FileStream|StreamReader|StreamWriter|SqlCommand|SqlDataAdapter|OleDbCommand|SqlCeCommand|Process|ProcessStartInfo|Redirect\(|Status\(|StatusCode\(|AddHeader\(|AppendHeader\(|Transfer\(|httpCookies|sessionstate|compilation|customErrors|httpRunTime'
-PHP = "|\$_GET|\$_POST|\$_REQUEST|\$HTTP_.*_VARS|\$_COOKIE|\$_FILES|REQUEST_METHOD|QUERY_STRING|REQUEST_URI|SERVER\[.?HTTP_|PHP_SELF|fopen|readfile|file\(|fpassthru|gzopen|gzfile|gzpassthru|readgzfile|copy|rename|rmdir|mkdir|unlink|file_.*_contents|parse_ini_file|include_?|require_?|virtual|_query|eval\(|call_user|create_function|exec\(|passthru|popen|proc_open|shell_exec|system\(|http_redirect|header|httpmessage::setresponsecode|httpmessage::setheaders|socket_|fsockopen|->prepare|->bind_param|->execute|_prepare|register_globals|safe_mode|mail\(|magic_quotes|allow_url_|display_errors|file_uploads|upload_tmp_dir|post_max_size|upload_max_filesize|preg_"
+PHP = "|\$_GET|\$_POST|\$_REQUEST|\$HTTP_.*_VARS|\$_COOKIE|\$_FILES|REQUEST_METHOD|QUERY_STRING|REQUEST_URI|SERVER\[.?HTTP_|PHP_SELF|fopen|readfile|file\(|fpassthru|gzopen|gzfile|gzpassthru|readgzfile|copy|rename|rmdir|mkdir|unlink|file_.*_contents|parse_ini_file|include_?|require_?|virtual|_query|eval\(|call_user|create_function|exec\(|passthru|popen|proc_open|shell_exec|system\(|http_redirect|header|httpmessage::setresponsecode|httpmessage::setheaders|socket_|fsockopen|->prepare|->bind_param|->execute|_prepare|register_globals|safe_mode|mail\(|magic_quotes|allow_url_|display_errors|file_uploads|upload_tmp_dir|post_max_size|upload_max_filesize|preg_|ereg_"
 CLIENTSIDE = "|\.location|document\.URL|addEventListener\(.?message|javascript:|location.hash|eval\(|domain=.?\*|; ?url=|innerHTML|localStorage|sessionStorage|documentURI|baseURI|\.referrer|document\.write\(|\.execScript\(|\.setInterval\(|\.setTimeout\("
 CUSTOM = "|regex|enkrypt|encrypt|crypt|clave|password|passwd|pwd|login|key|cipher|md5|sha1|hash|digest|sign|firma|b64|echo|https?:|://|\w+@\w+|email|aHR0|%2e%2e"
 
@@ -49,6 +54,7 @@ PATTERNS = "braubrau298" + PHP + JAVA + ASPNET + CLIENTSIDE + CUSTOM
 
 GREPCOMMAND = 'grep -HRnIE -C '+str(CONTEXT)+' --color=never --exclude=*.aramaki "' + PATTERNS + '" '
 
+# hardcoded config params, I am lazy ok?
 OUTPUT = 'grepoutput.aramaki'
 STATE = 'state.aramaki'
 FLAGGED_FILE = 'flagged.aramaki'
@@ -74,6 +80,9 @@ MAXSOURCELINES = SWIN_HEIGHT - (SVPAD*2) - 1
 # [['path/to/file.ext', '-999-', 'actual content']]
 # lines such as "/foo/log-2012-12-12-4589-hour 16:42:11 GET" are a bitch
 def processGrepFile(f, sep):
+    '''
+    builds slides array out of grep output
+    '''
     pprint("[*] Building code snippets...", colors.GREEN)
     rawslides = []
     rawslide = []
@@ -107,13 +116,20 @@ def processGrepFile(f, sep):
     return slides
 
 def grepFiles(files, output):
-    # command injection present, please autopwn yourself
+    '''
+    grep command wrapper
+    '''
+    # command injection present, please autopwn yourself %)
     pprint("[*] Running grep... ", colors.GREEN)
     pprint("[*] Grep exit code was %i" % subprocess.call(GREPCOMMAND + " " + files, stdout=output, stderr=sys.stderr, shell=True), colors.GREEN)
 
 def printSlide(slide, win, footer, flagged=False):
+    '''
+    displays one slide in the curses window
+    '''
 
     if len(slide) > MAXSOURCELINES:
+        # code snippet from grep is too big for the screen, trim it
         newslide = []
         available = MAXSOURCELINES - 1
         hits = 0
@@ -144,6 +160,7 @@ def printSlide(slide, win, footer, flagged=False):
         all_ignored = printSlide(newslide, win, footer, flagged)
 
     else:
+        # code snippet fits the screen
         global CURRENTHIT
         win.clear()
         CURRENTHIT = []
@@ -205,6 +222,9 @@ def printSlide(slide, win, footer, flagged=False):
     return all_ignored
 
 def f5():
+    '''
+    refresh all windows
+    '''
     printTitle(twin)
     printCommands(cwin, CURRENTHIT)
     stdscr.refresh()
@@ -246,6 +266,9 @@ def printCommands(win, patterns, flagged=False):
     win.addstr(2, 8, "Ignore pattern:" + l[:-1])
 
 def cleanCurses():
+    '''
+    leave terminal in a sane state
+    '''
     curses.curs_set(1)
     curses.nocbreak()
     stdscr.keypad(0)
