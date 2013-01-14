@@ -37,7 +37,7 @@ import pickle
 import os.path
 
 VERSION = '0.0.2alpha'
-TITLE = 'Aramaki - assisting tool for manual code review (v%s)' % VERSION
+TITLE = 'aramaki - assisting tool for manual code review (v%s)' % VERSION
 
 CONTEXT = 8
 
