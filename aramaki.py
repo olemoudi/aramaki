@@ -45,7 +45,7 @@ CONTEXT = 8
 # Probably still some interesting keywords are missing but these will get your
 # hands started and generate a good balance of interesting snippets vs false positives.
 JAVA = '|getParameter|getQueryString|getHeader|getRequestURI|getRequestURL|getCookies|getRequestedSessionID|getInputStream|getReader|getMethod|getProtocol|getServerName|getRemoteUser|getUserPrincipal|java\.io\.FileinputStream|java\.io\.FileOutputStream|java\.io\.FileReader|java\.io\.FileWriter|createStatement|\.execute\(|\.executeQuery\(|\.prepareStatement|PreparedStatement|getRuntime|runtime\.exec\(|sendRedirect|setStatus\(|addHeader\(|Socket\(|login-config|security-constraint|session-config|error-page|init-param'
-ASPNET = '|Request\[|\.Params|\.QueryString|\.ServerVariables|\.Headers|\.Url|\.RawURL|\.UrlReferrer|\.Cookies|\.BinaryRead|\.HTTPMethod|\.Browser|\.UserAgent|\.AcceptTypes|\.UserLanguages|FileStream|StreamReader|StreamWriter|SqlCommand|SqlDataAdapter|OleDbCommand|SqlCeCommand|Process|ProcessStartInfo|Redirect\(|Status\(|StatusCode\(|AddHeader\(|AppendHeader\(|Transfer\(|httpCookies|sessionstate|compilation|customErrors|httpRunTime'
+ASPNET = '|Session\[|Request\[|\.Params|\.QueryString|\.ServerVariables|\.Headers|\.Url|\.RawURL|\.UrlReferrer|\.Cookies|\.BinaryRead|\.HTTPMethod|\.Browser|\.UserAgent|\.AcceptTypes|\.UserLanguages|FileStream|StreamReader|StreamWriter|SqlCommand|SqlDataAdapter|OleDbCommand|SqlCeCommand|Process|ProcessStartInfo|Redirect\(|Status\(|StatusCode\(|AddHeader\(|AppendHeader\(|Transfer\(|httpCookies|sessionstate|compilation|customErrors|httpRunTime'
 PHP = "|\$_GET|\$_POST|\$_REQUEST|\$HTTP_.*_VARS|\$_COOKIE|\$_FILES|REQUEST_METHOD|QUERY_STRING|REQUEST_URI|SERVER\[.?HTTP_|PHP_SELF|fopen|readfile|file\(|fpassthru|gzopen|gzfile|gzpassthru|readgzfile|copy|rename|rmdir|mkdir|unlink|file_.*_contents|parse_ini_file|include_?|require_?|virtual|_query|eval\(|call_user|create_function|exec\(|passthru|popen|proc_open|shell_exec|system\(|http_redirect|header|httpmessage::setresponsecode|httpmessage::setheaders|socket_|fsockopen|->prepare|->bind_param|->execute|_prepare|register_globals|safe_mode|mail\(|magic_quotes|allow_url_|display_errors|file_uploads|upload_tmp_dir|post_max_size|upload_max_filesize|preg_|ereg_"
 CLIENTSIDE = "|\.location|document\.URL|addEventListener\(.?message|javascript:|location.hash|eval\(|domain=.?\*|; ?url=|innerHTML|localStorage|sessionStorage|documentURI|baseURI|\.referrer|document\.write\(|\.execScript\(|\.setInterval\(|\.setTimeout\("
 CUSTOM = "|regex|enkrypt|encrypt|crypt|clave|password|passwd|pwd|login|key|cipher|md5|sha1|hash|digest|sign|firma|b64|echo|https?:|://|\w+@\w+|email|aHR0|%2e%2e"
@@ -469,7 +469,7 @@ if __name__ == '__main__':
             elif 48 <= c <= 57:
                 IGNORED_PATTERNS.append(CURRENTHIT[c - 48])
             elif c == ord('e'):
-                subprocess.call(EDITOR + " " + slides[current][0][0], shell=True)
+                subprocess.call(EDITOR + " " + '"' + slides[current][0][0] + '"', shell=True)
             f5()
 
             # pickle every now and then
