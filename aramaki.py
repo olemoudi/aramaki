@@ -48,9 +48,11 @@ JAVA = '|getParameter|getQueryString|getHeader|getRequestURI|getRequestURL|getCo
 ASPNET = '|Session\[|Request\[|\.Params|\.QueryString|\.ServerVariables|\.Headers|\.Url|\.RawURL|\.UrlReferrer|\.Cookies|\.BinaryRead|\.HTTPMethod|\.Browser|\.UserAgent|\.AcceptTypes|\.UserLanguages|FileStream|StreamReader|StreamWriter|SqlCommand|SqlDataAdapter|OleDbCommand|SqlCeCommand|Process|ProcessStartInfo|Redirect\(|Status\(|StatusCode\(|AddHeader\(|AppendHeader\(|Transfer\(|httpCookies|sessionstate|compilation|customErrors|httpRunTime'
 PHP = "|\$_GET|\$_POST|\$_REQUEST|\$HTTP_.*_VARS|\$_COOKIE|\$_FILES|REQUEST_METHOD|QUERY_STRING|REQUEST_URI|SERVER\[.?HTTP_|PHP_SELF|fopen|readfile|file\(|fpassthru|gzopen|gzfile|gzpassthru|readgzfile|copy|rename|rmdir|mkdir|unlink|file_.*_contents|parse_ini_file|include_?|require_?|virtual|_query|eval\(|call_user|create_function|exec\(|passthru|popen|proc_open|shell_exec|system\(|http_redirect|header|httpmessage::setresponsecode|httpmessage::setheaders|socket_|fsockopen|->prepare|->bind_param|->execute|_prepare|register_globals|safe_mode|mail\(|magic_quotes|allow_url_|display_errors|file_uploads|upload_tmp_dir|post_max_size|upload_max_filesize|preg_|ereg_"
 CLIENTSIDE = "|\.location|document\.URL|addEventListener\(.?message|javascript:|location.hash|eval\(|domain=.?\*|; ?url=|innerHTML|localStorage|sessionStorage|documentURI|baseURI|\.referrer|document\.write\(|\.execScript\(|\.setInterval\(|\.setTimeout\("
-CUSTOM = "|regex|enkrypt|encrypt|crypt|clave|password|passwd|pwd|login|key|cipher|md5|sha1|hash|digest|sign|firma|b64|echo|https?:|://|\w+@\w+|email|aHR0|%2e%2e"
+CUSTOM = "|regex|enkrypt|encrypt|crypt|clave|password|passwd|pwd|login|key|cipher|md5|sha1|hash|digest|sign|firma|b64|echo|https?:|://|\w+@\w+|email|aHR0|%2e%2e|random|certificate|cert|uuid|imei|imsi|sql"
+OBJC = "|secureTextEntry|SFCertificate|SecItem|SecCopy|SecKey|SecAccess|SecACL|SecTrusted|SecTrusted|NSUserDefaults|NSManagedObjects|idleTimeDisabled|CMSEncoder|CMSDecoder|NSURLConnection|NSCachedURLResponse|cachedResponse|UIDocumentInteractionController|autocorrection|spellChecking|UIResponderStandardEditActions|WillResignActive|DidEnterBackground|WillEnterForeground|DidBecomeActive|willFinishLaunchingWithOptions|didFinishLaunchingWithOptions|willTerminate|NSFileProtection|ProtectedDataWillBecomeUnavailable|kSecAttrAccessible|CFStream|CFHost|NSStream|NSHost|NSURL|UIWebView|CFBundleURLSchemes|openURL|sqlite3|setAllowsAnyHTTPSCertificate|continueWithoutCredentialForAuthenticationChallenge|kCFStreamPropertySSL|kCFStreamSSL|NSHTTPCookieAcceptPolicy|NSDataWritingFileProtection|arc4random|UIPasteboard|UDID|uniqueIdentifier"
+ANDROID = "|MODE_WORLD_|openFileOutput\(|openFileInput\(|getDir\(|openOrCreateDatabase|getDatabasePath|openDatabase\(|getSharedPreferences\(|getCacheDir\(|getExternalCacheDir\(|SSLCertificateFactory|URLConnection|HttpClient|HttpPost|Response|query|compileStatement"
 
-PATTERNS = "braubrau298" + PHP + JAVA + ASPNET + CLIENTSIDE + CUSTOM
+PATTERNS = "braubrau298" + PHP + JAVA + ASPNET + CLIENTSIDE + CUSTOM + OBJC + ANDROID
 
 GREPCOMMAND = 'grep -HRnIE -C '+str(CONTEXT)+' --color=never --exclude=*.aramaki "' + PATTERNS + '" '
 
@@ -198,7 +200,8 @@ def printSlide(slide, win, footer, flagged=False):
                         else:
                             hitted = True
                             all_ignored = False
-                            CURRENTHIT.append(p)
+                            if p not in CURRENTHIT:
+                                CURRENTHIT.append(p)
                 if hitted:
                     numberatt = curses.A_BOLD
                     sourceatt = curses.color_pair(1)|curses.A_BOLD
