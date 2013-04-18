@@ -423,7 +423,7 @@ if __name__ == '__main__':
                 current = 0
 
             # skip slide for ignored files
-            while slides[current][0][0] in IGNORED_FILES and current < (len(slides) - 1):
+            while slides[current][0][0] in IGNORED_FILES and current < (len(slides) - 1) and current > 1:
                 if back:
                     current -= 1
                 else:
@@ -434,7 +434,7 @@ if __name__ == '__main__':
             else:
                 all_ignored = printSlide(slides[current], swin, FOOTERTEMP % (current+1, len(slides)), False )
             f5()
-            if all_ignored and current < (len(slides) - 1):
+            if all_ignored and current < (len(slides) - 1) and current > 1:
                 if back:
                     current -= 1
                 else:
