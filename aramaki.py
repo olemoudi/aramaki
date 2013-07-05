@@ -28,6 +28,11 @@ Questions/comments @olemoudi / ole@makensi.es / http://makensi.es
 
 EDITOR = '/usr/bin/gvim'
 
+if 'gvim' in EDITOR:
+    GVIM = True
+else:
+    GVIM = False
+
 import sys
 import re
 import subprocess
@@ -127,7 +132,7 @@ def grepFiles(files, output):
 
 def printSlide(slide, win, footer, flagged=False):
     '''
-    displays one slide in the curses window
+    displays on
     '''
 
     if len(slide) > MAXSOURCELINES:
@@ -472,7 +477,11 @@ if __name__ == '__main__':
             elif 48 <= c <= 57:
                 IGNORED_PATTERNS.append(CURRENTHIT[c - 48])
             elif c == ord('e'):
-                subprocess.call(EDITOR + " " + '"' + slides[current][0][0] + '"', shell=True)
+                if GVIM:
+                    subprocess.call('%s +%s "%s"' % (EDITOR, slides[current][1][1][1:-1], slides[current][0][0]) , shell=True)
+                else:
+                    subprocess.call('%s "%s"' % (EDITOR, slides[current][0][0]) , shell=True)
+
             f5()
 
             # pickle every now and then
