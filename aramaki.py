@@ -40,6 +40,7 @@ import curses
 import traceback
 import pickle
 import os.path
+import argparse
 
 VERSION = '0.0.2alpha'
 TITLE = 'aramaki - assisting tool for manual code review (v%s)' % VERSION
@@ -361,6 +362,17 @@ def pprint(text, color):
 if __name__ == '__main__':
 
     printBanner() 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--include', help='Include Glob for grep', action='append',  required=False)
+    parser.add_argument('dir', nargs='+')
+    args = parser.parse_args()
+    
+    if args.include:
+        global GREPCOMMAND
+        for i in args.include:
+            GREPCOMMAND += ' --include=%s' % i
+    #print GREPCOMMAND
+
     global state
     restore = False
     if os.path.exists(STATE):
